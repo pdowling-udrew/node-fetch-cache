@@ -5,7 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "exports": {
-    "import": "./src/index.js"
+    "import": "./src/index.js",
+    "require": "./commonjs/wrapper.cjs"
   },
   "scripts": {
     "buildcjs": "rollup src/index.js --file commonjs/index.cjs --format cjs",
