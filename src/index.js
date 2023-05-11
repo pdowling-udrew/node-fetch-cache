@@ -6,6 +6,21 @@ import { NFCResponse } from './classes/response.js';
 import { MemoryCache } from './classes/caching/memory_cache.js';
 
 const CACHE_VERSION = 4;
+const DEFAULT_KEY_FLAGS = {
+  cache: true,
+  credentials: true,
+  destination: true,
+  headers: true,
+  integrity: true,
+  method: true,
+  redirect: true,
+  referrer: true,
+  referrerPolicy: true,
+  url: true,
+  body: true,
+}
+
+let key_flags = DEFAULT_KEY_FLAGS;
 
 function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
@@ -65,17 +80,17 @@ function getRequestCacheKey(req) {
   const headersPojo = Object.fromEntries([...req.headers.entries()]);
 
   return {
-    cache: req.cache,
-    credentials: req.credentials,
-    destination: req.destination,
-    headers: getHeadersCacheKeyJson(headersPojo),
-    integrity: req.integrity,
-    method: req.method,
-    redirect: req.redirect,
-    referrer: req.referrer,
-    referrerPolicy: req.referrerPolicy,
-    url: req.url,
-    body: getBodyCacheKeyJson(req.body),
+    cache: key_flags['cache'] ? req.cache : '',
+    credentials: key_flags['credentials'] ? req.credentials : '',
+    destination: key_flags['destination'] ? req.destination : '',
+    headers: key_flags['headers'] ? getHeadersCacheKeyJson(headersPojo) : '',
+    integrity: key_flags['integrity'] ? req.integrity : '',
+    method: key_flags['method'] ? req.method : '',
+    redirect: key_flags['redirect'] ? req.redirect : '',
+    referrer: key_flags['referrer'] ? req.referrer : '',
+    referrerPolicy: key_flags['referrerPolicy'] ? req.referrerPolicy : '',
+    url: key_flags['url'] ? req.url : '',
+    body: key_flags['body'] ? getBodyCacheKeyJson(req.body) : '',
   };
 }
 
@@ -165,9 +180,11 @@ async function getResponse(cache, requestArguments) {
   }
 }
 
-function createFetchWithCache(cache) {
+function createFetchWithCache(cache, options = {}) {
   const fetchCache = (...args) => getResponse(cache, args);
   fetchCache.withCache = createFetchWithCache;
+
+  key_flags = Object.assign(DEFAULT_KEY_FLAGS, options.keyFlags);
 
   return fetchCache;
 }
