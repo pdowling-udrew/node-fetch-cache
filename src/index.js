@@ -54,7 +54,15 @@ function getHeadersCacheKeyJson(headersObj) {
   return Object.fromEntries(
     Object.entries(headersObj)
       .map(([key, value]) => [key.toLowerCase(), value])
-      .filter(([key, value]) => key !== 'cache-control' || value !== 'only-if-cached'),
+      .filter(([key, value]) => 
+        (key !== 'cache-control' || value !== 'only-if-cached') && 
+        /* Either: 
+          * we're just including headers entire (if key_flags.headers == false we shouldn't be here anyway)
+          * or key_flags.headers is an object and doesn't include a directive for this header key (in which case include it by default)
+          * or key_flags.headers is an object and we're not explicitly excluding this header key
+          */
+        (typeof key_flags.headers === 'boolean' || !key_flags.headers.hasOwnProperty(key) || key_flags.headers[key])
+      )
   );
 }
 
