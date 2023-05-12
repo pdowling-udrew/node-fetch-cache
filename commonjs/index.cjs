@@ -285,7 +285,7 @@ function getCacheKey(resource, init = {}) {
 
   const initCacheKeyJson = {
     ...init,
-    headers: getHeadersCacheKeyJson(init.headers || {}),
+    headers: key_flags['headers'] ? getHeadersCacheKeyJson(init.headers || {}) : '',
   };
 
   resourceCacheKeyJson.body = getBodyCacheKeyJson(resourceCacheKeyJson.body);
@@ -369,6 +369,8 @@ function createFetchWithCache(cache, options = {}) {
   fetchCache.withCache = createFetchWithCache;
 
   key_flags = Object.assign(DEFAULT_KEY_FLAGS, options.keyFlags);
+  
+  console.log('Created cache with options:',options);
 
   return fetchCache;
 }
