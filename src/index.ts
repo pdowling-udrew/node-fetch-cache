@@ -10,17 +10,17 @@ type FetchCacheOptions = {
   keyFlags?:KeyFlags
 }
 type KeyFlags = {
-  cache:Boolean
-  credentials:Boolean
-  destination:Boolean
-  headers:Boolean|Object
-  integrity:Boolean
-  method:Boolean
-  redirect:Boolean
-  referrer:Boolean
-  referrerPolicy:Boolean
-  url:Boolean
-  body:Boolean
+  cache?:Boolean
+  credentials?:Boolean
+  destination?:Boolean
+  headers?:Boolean|Object
+  integrity?:Boolean
+  method?:Boolean
+  redirect?:Boolean
+  referrer?:Boolean
+  referrerPolicy?:Boolean
+  url?:Boolean
+  body?:Boolean
 }
 
 const CACHE_VERSION = 4;
